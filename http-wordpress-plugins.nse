@@ -25,6 +25,7 @@ check the first 100 ones. Users can tweak this with an option (see below).
 -- @args http-wordpress-plugins.root If set, points to the blog root directory on the website. If not, the script will try to find a WP directory installation or fall back to root.
 -- @args http-wordpress-plugins.search As the plugins list contains tens of thousand of plugins, this script will only search the 100 most popular ones by default.
 -- Use this option with a number or "all" as an argument for a more comprehensive brute force.
+-- @args http-wordpress-plugins.apicheck Set to true or false to enable the API latest version check. The check gets the latest version of the plugin from the wordpress.org plugin API. Default is true.  
 --
 -- @usage
 -- nmap --script=http-wordpress-plugins --script-args http-wordpress-plugins.root="/blog/",http-wordpress-plugins.search=500 <targets>
@@ -35,10 +36,10 @@ check the first 100 ones. Users can tweak this with an option (see below).
 -- 80/tcp open  http    syn-ack
 -- | http-wordpress-plugins:
 -- | search amongst the 500 most popular plugins
--- |   akismet 3.0.4
--- |   wordpress-seo 1.7
--- |   disqus-comment-system 2.83
--- |_  wp-to-twitter
+-- |   akismet 3.0.4 (latest version: 3.0.4)
+-- |   wordpress-seo 1.7 (latest version: 1.7.1)
+-- |   disqus-comment-system 2.83 (latest version: 2.84)
+-- |_  wp-to-twitter 1.2 (latest version: 1.45)
 
 author = "Ange Gutek"
 
@@ -83,6 +84,7 @@ action = function(host, port)
   local wp_root = stdnse.get_script_args("http-wordpress-plugins.root")
   local plugins_search = DEFAULT_PLUGINS_SEARCH
   local plugins_search_arg = stdnse.get_script_args("http-wordpress-plugins.search")
+  local apicheck = stdnse.get_script_args("http-wordpress-plugins.apicheck") or "true"
 
   if plugins_search_arg == "all" then
     plugins_search = nil
@@ -107,7 +109,7 @@ action = function(host, port)
       end
     end
   end
-
+  
 
   --identify the 404
   local status_404, result_404, body_404 = http.identify_404(host, port)
@@ -157,13 +159,23 @@ action = function(host, port)
       -- now try and get the version of the plugin from readme.txt
       readmepath = bfqueries[i][1] .. "readme.txt"
       local pluginversion = nil
+      local latestpluginapi = nil
       pluginfound = nil 
       stdnse.print_debug(1, "http-wordpress-plugins.nse: Readme path: %s", readmepath)
       local readmecheck = http.get(host, port, readmepath)
-      stdnse.print_debug(1, "http-wordpress-plugins.nse: Found readme: %s", readmecheck.data)
       local readmepattern = 'Stable tag: ([.0-9]*)' 
       local pluginversion = readmecheck.body:match(readmepattern)
       if pluginversion then
+          if apicheck == "true" then
+              local apiurl = "http://api.wordpress.org/plugins/info/1.0/" .. bfqueries[i][2] .. ".json"
+              local latestpluginapi = http.get('api.wordpress.org', '80', apiurl)
+              local latestpluginpattern = '","version":"([.0-9]*)'
+              local latestpluginversion = latestpluginapi.body:match(latestpluginpattern)
+              stdnse.print_debug(1, "http-wordpress-plugins.nse: latest version check : %s", latestpluginversion)
+              if latestpluginversion then
+                   pluginversion = pluginversion .. " (latest version: " .. latestpluginversion .. ")"
+              end
+          end
           pluginfound = bfqueries[i][2] .. " " .. pluginversion
       else
           pluginfound = bfqueries[i][2]
