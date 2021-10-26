@@ -15,8 +15,8 @@ http-wordpress-info.nse
 This script is non-intrusive and parses the source HTML of a WordPress page to find plugins, theme and the version of WordPress.
 
 - Version is detected from the Meta Generator Tag or `/feed/atom/` if not present.
-- Plugins are detected from HTML source /wp-content/plugins/<pluginname>/ in addition a number of known HTML strings for common plugins are checked.
-- Theme is detected from HTML source /wp-content/themes/<themename>/
+- Plugins are detected from HTML source /wp-content/plugins/**$pluginname**/ in addition a number of known HTML strings for common plugins are checked.
+- Theme is detected from HTML source /wp-content/themes/**$themename**/
 - PHP Version is shown if present in HTTP Headers (Server or X-Powered-By)
 - HTTP Server is shown from HTTP Header (Server)
 
