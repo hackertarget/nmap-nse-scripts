@@ -22,12 +22,12 @@ This script is non-intrusive and parses the source HTML of a WordPress page to f
 
 http-wordpress-plugins.nse 
 ----
------Deprecated as http-wordpress-enum.nse has been updated with this functionality
+#### Deprecated as http-wordpress-enum.nse has been updated with this functionality
 A modified version of the original `http-wordpress-plugins.nse` script that will also attempt to identify the version of the plugins that have been detected following the brute force of the plugin paths.
 
 http-wordpress-themes.nse
 ----
------Deprecated as http-wordpress-enum.nse has been updated with this functionality
+#### Deprecated as http-wordpress-enum.nse has been updated with this functionality
 Another modified version of the `http-wordpress-plugins.nse` script this script will identify themes installed in the **/wp-content/themes/** folder and also attempt to identify the version of the themes from the **style.css** file. The **wp-theme.lst** was created by crawling the Top 1 million WordPress sites and ranking the themes by popularity.
 
 Themes that are installed but not in use by a WordPress installation can still contain vulnerabilities that could lead to the compromise of the WordPress installation and server.
