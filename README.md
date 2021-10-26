@@ -34,7 +34,7 @@ Themes that are installed but not in use by a WordPress installation can still c
 
 hostmap-hackertarget.nse
 ----
-Similar to the hostmap-robtex.nse this script will attempt to identify hosts sharing the IP address that is being scanned. The hosts are found using the [Reverse IP Lookup API](https://hackertarget.com/reverse-ip-lookup/ "Reverse IP Lookup") that utilises DNS records from the [Scans.IO](https://scans.io) project.
+Similar to the hostmap-robtex.nse this script will attempt to identify hosts sharing the IP address that is being scanned. The hosts are found using the [Reverse IP Lookup API](https://hackertarget.com/reverse-ip-lookup/ "Reverse IP Lookup") that utilises DNS records from the [Scans.IO](https://scans.io) project, Certificate Transparency and other Data Sources.
 
 About HackerTarget Pty Ltd
 ----
